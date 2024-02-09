@@ -1,6 +1,6 @@
 import { getFoodData } from '../api';
 import FoodList from './FoodList';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 function App() {
   //items,정렬기준 state
   const [items, setItems] = useState([]);
@@ -16,10 +16,13 @@ function App() {
     setItems(nextItems);
   };
   //데이터 받아오는 함수
-  const handleLoadClick = async () => {
-    const { foods } = await getFoodData();
+  const handleLoadClick = async (orderQuery) => {
+    const { foods } = await getFoodData(orderQuery);
     setItems(foods);
   };
+  useEffect(() => {
+    handleLoadClick(order);
+  }, [order]);
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
   return (
@@ -30,7 +33,6 @@ function App() {
       </div>
       <div>
         <FoodList items={sortedItems} onDelete={handleDelete} />
-        <button onClick={handleLoadClick}>불러오기</button>
       </div>
     </>
   );
